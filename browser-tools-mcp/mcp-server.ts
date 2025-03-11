@@ -2,8 +2,22 @@
 
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
+import { z } from "zod";
 import path from "path";
 import fs from "fs";
+
+// Define parameter types for our tools
+interface NoParamToolParams {
+  random_string: string;
+}
+
+interface ClickElementParams {
+  selector: string;
+}
+
+interface NavigateParams {
+  url: string;
+}
 
 // Create the MCP server
 const server = new McpServer({
@@ -1423,6 +1437,96 @@ server.tool(
     });
   }
 );
+
+// Add new browser interaction tools
+server.tool("mcp_Browser_Tools_reloadPage", "Reload the current browser page", async () => {
+  return await withServerConnection(async () => {
+    const response = await fetch(`http://${discoveredHost}:${discoveredPort}/browser/reload`, {
+      method: "POST",
+    });
+    const json = await response.json();
+    return {
+      content: [
+        {
+          type: "text",
+          text: JSON.stringify(json, null, 2),
+        },
+      ],
+    };
+  });
+});
+
+server.tool("mcp_Browser_Tools_clickElement", { selector: z.string() }, async ({ selector }) => {
+  return await withServerConnection(async () => {
+    const response = await fetch(`http://${discoveredHost}:${discoveredPort}/browser/click`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ selector }),
+    });
+    const json = await response.json();
+    return {
+      content: [
+        {
+          type: "text",
+          text: JSON.stringify(json, null, 2),
+        },
+      ],
+    };
+  });
+});
+
+server.tool("mcp_Browser_Tools_navigateTo", { url: z.string() }, async ({ url }) => {
+  return await withServerConnection(async () => {
+    const response = await fetch(`http://${discoveredHost}:${discoveredPort}/browser/navigate`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ url }),
+    });
+    const json = await response.json();
+    return {
+      content: [
+        {
+          type: "text",
+          text: JSON.stringify(json, null, 2),
+        },
+      ],
+    };
+  });
+});
+
+server.tool("mcp_Browser_Tools_goBack", "Go back in browser history", async () => {
+  return await withServerConnection(async () => {
+    const response = await fetch(`http://${discoveredHost}:${discoveredPort}/browser/back`, {
+      method: "POST",
+    });
+    const json = await response.json();
+    return {
+      content: [
+        {
+          type: "text",
+          text: JSON.stringify(json, null, 2),
+        },
+      ],
+    };
+  });
+});
+
+server.tool("mcp_Browser_Tools_goForward", "Go forward in browser history", async () => {
+  return await withServerConnection(async () => {
+    const response = await fetch(`http://${discoveredHost}:${discoveredPort}/browser/forward`, {
+      method: "POST",
+    });
+    const json = await response.json();
+    return {
+      content: [
+        {
+          type: "text",
+          text: JSON.stringify(json, null, 2),
+        },
+      ],
+    };
+  });
+});
 
 // Start receiving messages on stdio
 (async () => {

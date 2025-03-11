@@ -11,6 +11,7 @@
     "inspect-live": "npx @modelcontextprotocol/inspector npx -- @agentdeskai/browser-tools-mcp",
     "build": "tsc",
     "start": "tsc && node dist/mcp-server.js",
+    "dev": "npm install && tsc && node dist/mcp-server.js",
     "prepublishOnly": "npm run build",
     "update": "npm run build && npm version patch && npm publish"
   },

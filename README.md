@@ -4,6 +4,8 @@
 
 This application is a powerful browser monitoring and interaction tool that enables AI-powered applications via Anthropic's Model Context Protocol (MCP) to capture and analyze browser data through a Chrome extension.
 
+This is a fork maintained by Legends of Learning, originally from [AgentDeskAI/browser-tools-mcp](https://github.com/AgentDeskAI/browser-tools-mcp).
+
 Read our [docs](https://browsertools.agentdesk.ai/) for the full installation, quickstart and contribution guides.
 
 ## Updates
@@ -51,15 +53,46 @@ Coding agents like Cursor can run these audits against the current page seamless
 
 ## 🔑 Key Additions
 
-| Audit Type         | Description                                                                                                                              |
-| ------------------ | ---------------------------------------------------------------------------------------------------------------------------------------- |
-| **Accessibility**  | WCAG-compliant checks for color contrast, missing alt text, keyboard navigation traps, ARIA attributes, and more.                        |
-| **Performance**    | Lighthouse-driven analysis of render-blocking resources, excessive DOM size, unoptimized images, and other factors affecting page speed. |
-| **SEO**            | Evaluates on-page SEO factors (like metadata, headings, and link structure) and suggests improvements for better search visibility.      |
-| **Best Practices** | Checks for general best practices in web development.                                                                                    |
-| **NextJS Audit**   | Injects a prompt used to perform a NextJS audit.                                                                                         |
-| **Audit Mode**     | Runs all audting tools in a sequence.                                                                                                    |
-| **Debugger Mode**  | Runs all debugging tools in a sequence.                                                                                                  |
+## Available Tools
+
+### Browser Navigation Tools
+
+| Tool Name | Description |
+| --------- | ----------- |
+| `mcp_Browser_Tools_reloadPage` | Reloads the current browser page |
+| `mcp_Browser_Tools_clickElement` | Clicks an element matching the provided selector |
+| `mcp_Browser_Tools_navigateTo` | Navigates to a specified URL |
+| `mcp_Browser_Tools_goBack` | Goes back one page in browser history |
+| `mcp_Browser_Tools_goForward` | Goes forward one page in browser history |
+
+### Audit & Analysis Tools
+
+| Tool Name | Description |
+| --------- | ----------- |
+| `mcp_Browser_Tools_runAccessibilityAudit` | WCAG-compliant checks for accessibility |
+| `mcp_Browser_Tools_runPerformanceAudit` | Lighthouse-driven performance analysis |
+| `mcp_Browser_Tools_runSEOAudit` | Evaluates on-page SEO factors |
+| `mcp_Browser_Tools_runBestPracticesAudit` | Checks for web development best practices |
+| `mcp_Browser_Tools_runNextJSAudit` | NextJS-specific audit |
+| `mcp_Browser_Tools_runAuditMode` | Runs all auditing tools in sequence |
+| `mcp_Browser_Tools_runDebuggerMode` | Runs all debugging tools in sequence |
+
+### Console & Network Tools
+
+| Tool Name | Description |
+| --------- | ----------- |
+| `mcp_Browser_Tools_getConsoleLogs` | Get browser console logs |
+| `mcp_Browser_Tools_getConsoleErrors` | Get browser console errors |
+| `mcp_Browser_Tools_getNetworkErrors` | Get network error logs |
+| `mcp_Browser_Tools_getNetworkLogs` | Get all network logs |
+| `mcp_Browser_Tools_wipeLogs` | Clear all stored logs |
+
+### DOM & Visual Tools
+
+| Tool Name | Description |
+| --------- | ----------- |
+| `mcp_Browser_Tools_takeScreenshot` | Capture current page screenshot |
+| `mcp_Browser_Tools_getSelectedElement` | Get currently selected DOM element |
 
 ---
 
@@ -221,3 +254,117 @@ Once installed and configured, the system allows any compatible MCP client to:
 - Works with any MCP-compatible client
 - Primarily designed for Cursor IDE integration
 - Supports other AI editors and MCP clients
+
+## Development Setup
+
+### 1. Local Development
+
+Clone and set up the repository:
+```bash
+git clone https://github.com/LegendsOfLearning/browser-tools-mcp.git
+cd browser-tools-mcp/browser-tools-mcp
+npm install
+npx tsc
+```
+
+### 2. Configure Cursor
+
+Edit your Cursor MCP configuration at `~/.cursor/mcp.json`:
+
+```json
+{
+  "mcpServers": {
+    "Browser Tools": {
+      "command": "node",
+      "args": [
+        "/path/to/your/browser-tools-mcp/browser-tools-mcp/dist/mcp-server.js"
+      ]
+    }
+  }
+}
+```
+
+Replace `/path/to/your` with your actual path to the project.
+
+### 3. Chrome Extension
+
+1. Install the BrowserTools MCP extension from Chrome Web Store
+2. Configure it to connect to `127.0.0.1:3025` (default)
+
+### 4. Running the Server
+
+You can run the server in two ways:
+
+#### Development Mode
+```bash
+cd browser-tools-mcp
+npm install
+npx tsc
+node dist/mcp-server.js
+```
+
+#### Production Mode (via npm)
+```bash
+npx @agentdeskai/browser-tools-mcp@1.1.0
+```
+
+The server will attempt to discover available ports starting from 3025.
+
+## Development Workflow
+
+1. Make changes to the TypeScript source
+2. Run `npx tsc` to compile
+3. Restart the server
+4. Cursor will automatically connect to your local development version
+
+## Troubleshooting
+
+- If "Client closed" appears in Cursor's MCP panel:
+  1. Ensure the server is running
+  2. Check the path in `mcp.json` is correct
+  3. Restart Cursor or refresh the MCP panel
+
+- If the Chrome extension isn't connecting:
+  1. Verify the server is running on port 3025
+  2. Check extension settings
+  3. Ensure no other instances are running (`pkill -f "browser-tools-mcp"`)
+
+## Production vs Development
+
+- **Production**: Uses the npm package `@agentdeskai/browser-tools-mcp`
+- **Development**: Uses your local version for testing changes
+
+Remember to recompile TypeScript (`npx tsc`) after making changes to the source code.
+
+---
+
+## Development Guide (LoL Fork)
+
+### Branch Strategy
+
+- `main`: Synced with upstream AgentDeskAI repo
+- `lol-main`: Our customized version with LoL-specific changes
+
+### Updating from Upstream
+
+```bash
+# Update main from upstream
+git checkout main
+git fetch upstream
+git merge upstream/main
+
+# Update lol-main with changes
+git checkout lol-main
+git merge main
+```
+
+### Latest Features (v1.2.1-lol.0)
+
+- 🆕 Added simplified navigation tools:
+  - `reloadPage`
+  - `clickElement`
+  - `navigateTo`
+  - `goBack`
+  - `goForward`
+- 🔄 Auto-reconnect for more stable connections
+- 🚀 Improved error handling and logging

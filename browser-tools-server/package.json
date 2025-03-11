@@ -1,6 +1,6 @@
 {
   "name": "@agentdeskai/browser-tools-server",
-  "version": "1.2.0",
+  "version": "1.2.1-lol.0",
   "description": "A browser tools server for capturing and managing browser events, logs, and screenshots",
   "type": "module",
   "main": "dist/browser-connector.js",
@@ -10,6 +10,7 @@
   "scripts": {
     "build": "tsc",
     "start": "tsc && node dist/browser-connector.js",
+    "dev": "npm install && tsc && node dist/browser-connector.js",
     "prepublishOnly": "npm run build"
   },
   "keywords": [

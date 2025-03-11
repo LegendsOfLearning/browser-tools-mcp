@@ -1439,7 +1439,7 @@ server.tool(
 );
 
 // Add new browser interaction tools
-server.tool("mcp_Browser_Tools_reloadPage", "Reload the current browser page", async () => {
+server.tool("reloadPage", "Reload the current browser page", async () => {
   return await withServerConnection(async () => {
     const response = await fetch(`http://${discoveredHost}:${discoveredPort}/browser/reload`, {
       method: "POST",
@@ -1456,7 +1456,7 @@ server.tool("mcp_Browser_Tools_reloadPage", "Reload the current browser page", a
   });
 });
 
-server.tool("mcp_Browser_Tools_clickElement", { selector: z.string() }, async ({ selector }) => {
+server.tool("clickElement", { selector: z.string() }, async ({ selector }) => {
   return await withServerConnection(async () => {
     const response = await fetch(`http://${discoveredHost}:${discoveredPort}/browser/click`, {
       method: "POST",
@@ -1475,7 +1475,7 @@ server.tool("mcp_Browser_Tools_clickElement", { selector: z.string() }, async ({
   });
 });
 
-server.tool("mcp_Browser_Tools_navigateTo", { url: z.string() }, async ({ url }) => {
+server.tool("navigateTo", { url: z.string() }, async ({ url }) => {
   return await withServerConnection(async () => {
     const response = await fetch(`http://${discoveredHost}:${discoveredPort}/browser/navigate`, {
       method: "POST",
@@ -1494,7 +1494,7 @@ server.tool("mcp_Browser_Tools_navigateTo", { url: z.string() }, async ({ url })
   });
 });
 
-server.tool("mcp_Browser_Tools_goBack", "Go back in browser history", async () => {
+server.tool("goBack", "Go back in browser history", async () => {
   return await withServerConnection(async () => {
     const response = await fetch(`http://${discoveredHost}:${discoveredPort}/browser/back`, {
       method: "POST",
@@ -1511,7 +1511,7 @@ server.tool("mcp_Browser_Tools_goBack", "Go back in browser history", async () =
   });
 });
 
-server.tool("mcp_Browser_Tools_goForward", "Go forward in browser history", async () => {
+server.tool("goForward", "Go forward in browser history", async () => {
   return await withServerConnection(async () => {
     const response = await fetch(`http://${discoveredHost}:${discoveredPort}/browser/forward`, {
       method: "POST",

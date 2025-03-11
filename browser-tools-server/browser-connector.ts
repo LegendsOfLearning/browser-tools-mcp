@@ -810,6 +810,69 @@ export class BrowserConnector {
         }
       }
     );
+
+    // Browser interaction endpoints
+    app.post("/browser/reload", (req, res) => {
+      if (!this.activeConnection) {
+        res.status(400).json({ error: "No active browser connection" });
+        return;
+      }
+
+      this.activeConnection.send(JSON.stringify({ type: "reload" }));
+      res.json({ success: true, message: "Page reload requested" });
+    });
+
+    app.post("/browser/click", (req, res) => {
+      if (!this.activeConnection) {
+        res.status(400).json({ error: "No active browser connection" });
+        return;
+      }
+
+      const { selector } = req.body;
+      if (!selector) {
+        res.status(400).json({ error: "Selector is required" });
+        return;
+      }
+
+      this.activeConnection.send(JSON.stringify({ type: "click", selector }));
+      res.json({ success: true, message: `Click requested on element: ${selector}` });
+    });
+
+    app.post("/browser/navigate", (req, res) => {
+      if (!this.activeConnection) {
+        res.status(400).json({ error: "No active browser connection" });
+        return;
+      }
+
+      const { url } = req.body;
+      if (!url) {
+        res.status(400).json({ error: "URL is required" });
+        return;
+      }
+
+      this.activeConnection.send(JSON.stringify({ type: "navigate", url }));
+      res.json({ success: true, message: `Navigation requested to: ${url}` });
+    });
+
+    app.post("/browser/back", (req, res) => {
+      if (!this.activeConnection) {
+        res.status(400).json({ error: "No active browser connection" });
+        return;
+      }
+
+      this.activeConnection.send(JSON.stringify({ type: "back" }));
+      res.json({ success: true, message: "Back navigation requested" });
+    });
+
+    app.post("/browser/forward", (req, res) => {
+      if (!this.activeConnection) {
+        res.status(400).json({ error: "No active browser connection" });
+        return;
+      }
+
+      this.activeConnection.send(JSON.stringify({ type: "forward" }));
+      res.json({ success: true, message: "Forward navigation requested" });
+    });
   }
 
   private async handleScreenshot(req: express.Request, res: express.Response) {

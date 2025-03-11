@@ -943,6 +943,58 @@ async function setupWebSocket() {
       try {
         const message = JSON.parse(event.data);
 
+        // Handle browser interaction messages
+        if (message.type === "reload") {
+          chrome.devtools.inspectedWindow.reload();
+        } else if (message.type === "click") {
+          const { selector } = message;
+          chrome.devtools.inspectedWindow.eval(
+            `(function() {
+              const element = document.querySelector("${selector}");
+              if (element) {
+                element.click();
+                return true;
+              }
+              return false;
+            })()`,
+            (result, error) => {
+              if (error) {
+                console.error("Error clicking element:", error);
+              } else if (!result) {
+                console.error("Element not found:", selector);
+              }
+            }
+          );
+        } else if (message.type === "navigate") {
+          const { url } = message;
+          chrome.devtools.inspectedWindow.eval(
+            `window.location.href = "${url}"`,
+            (result, error) => {
+              if (error) {
+                console.error("Error navigating to URL:", error);
+              }
+            }
+          );
+        } else if (message.type === "back") {
+          chrome.devtools.inspectedWindow.eval(
+            "window.history.back()",
+            (result, error) => {
+              if (error) {
+                console.error("Error going back:", error);
+              }
+            }
+          );
+        } else if (message.type === "forward") {
+          chrome.devtools.inspectedWindow.eval(
+            "window.history.forward()",
+            (result, error) => {
+              if (error) {
+                console.error("Error going forward:", error);
+              }
+            }
+          );
+        }
+
         // Don't log heartbeat responses to reduce noise
         if (message.type !== "heartbeat-response") {
           console.log("Chrome Extension: Received WebSocket message:", message);
@@ -1096,10 +1148,7 @@ async function setupWebSocket() {
           requestCurrentUrl();
         }
       } catch (error) {
-        console.error(
-          "Chrome Extension: Error processing WebSocket message:",
-          error
-        );
+        console.error("Error processing WebSocket message:", error);
       }
     };
   } catch (error) {
